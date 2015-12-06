@@ -3,6 +3,7 @@
 *.m4a
 *.meta
 
+*.txt
 *.sublime-project
 *.sublime-workspace
 
