@@ -1,7 +1,10 @@
 #!/usr/bin/env python
+from __future__ import print_function
 from pydub import AudioSegment
 from pydub.exceptions import CouldntDecodeError
 import sys, os, argparse
+
+enabled_log = False
 
 def fmt_hms(millis):
     s, ms = divmod(millis, 1000)
@@ -9,12 +12,18 @@ def fmt_hms(millis):
     h, m = divmod(m, 60)
     return "%d:%02d:%02d.%03d" % (h, m, s, ms)
 
+def log(msg):
+    global enabled_log
+    if enabled_log:
+        print(msg, file=sys.stderr)
+
 def is_in_range(v, lo, hi=float('inf')):
     return lo <= v <= hi
 
 def eval_file(fname, selector, callback):
     name, extention = os.path.splitext(fname)
     if extention in (".mp3", ".wma", ".wav", ".m4a", ".ogg"):
+        log("Processing: " + fname)
         extention = extention[1:] # remove leading dot
         try:
             seg = AudioSegment.from_file(fname, extention)
@@ -46,11 +55,14 @@ class AudioSelector(list):
 def cb_print(name, value, seg):
     if value:
         print(name)
+
 def cb_print_info(name, value, seg):
     if value:
         print("'%s' %d %f"%(name, seg.rms, seg.dBFS))
 
 def main():
+    global enabled_log
+
     parser = argparse.ArgumentParser(
         prog='audioselect',
         description='''
@@ -60,6 +72,9 @@ def main():
     parser.add_argument('files', nargs='*', 
         help='One or more audio files or directories containing audio files'
     )
+    parser.add_argument('--verbose', '-v',
+        action='store_true',
+        help='Output debug logs to stderr.')
     parser.add_argument('--show-value', 
         action='store_true',
         help='Display all measured values after each selected entry.'
@@ -76,6 +91,8 @@ def main():
     )
 
     args = parser.parse_args()
+    if args.verbose:
+        enabled_log = True
 
     # construct selector
     selector = AudioSelector()
