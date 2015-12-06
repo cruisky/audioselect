@@ -1,3 +1,11 @@
+*.mp3
+*.wma
+*.m4a
+*.meta
+
+*.sublime-project
+*.sublime-workspace
+
 # Byte-compiled / optimized / DLL files
 __pycache__/
 *.py[cod]
@@ -55,3 +63,5 @@ docs/_build/
 
 # PyBuilder
 target/
+
+
