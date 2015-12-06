@@ -1,5 +1,4 @@
 #!/usr/bin/env python
-
 from pydub import AudioSegment
 from pydub.exceptions import CouldntDecodeError
 import sys, os, argparse
@@ -77,7 +76,6 @@ def main():
     )
 
     args = parser.parse_args()
-    print(args)
 
     # construct selector
     selector = AudioSelector()
